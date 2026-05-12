@@ -24,6 +24,12 @@ def main():
         help="Transcription backend",
     )
     serve_parser.add_argument("--no-rest", action="store_true", help="Disable REST API")
+    serve_parser.add_argument("--api-key", default=None, help="API key for auth (REST + WebSocket)")
+    serve_parser.add_argument("--rate-limit-rpm", type=int, default=0, help="Max REST requests per minute per IP (0=unlimited)")
+    serve_parser.add_argument("--metrics-port", type=int, default=0, help="Prometheus metrics port (0=disabled)")
+    serve_parser.add_argument("--batch-inference", action="store_true", help="Enable cross-client GPU batching")
+    serve_parser.add_argument("--batch-max-size", type=int, default=8, help="Max requests per GPU batch (default: 8)")
+    serve_parser.add_argument("--batch-window-ms", type=int, default=50, help="Max ms to wait for batch to fill (default: 50)")
     serve_parser.add_argument("--log-json", action="store_true", help="Use JSON structured logging")
     serve_parser.add_argument("-v", "--verbose", action="store_true", help="Debug logging")
 
@@ -58,6 +64,12 @@ def main():
             backend=args.backend,
             model=args.model,
             enable_rest_api=not args.no_rest,
+            api_key=args.api_key,
+            rate_limit_rpm=args.rate_limit_rpm,
+            metrics_port=args.metrics_port,
+            batch_inference=args.batch_inference,
+            batch_max_size=args.batch_max_size,
+            batch_window_ms=args.batch_window_ms,
         )
         server.run()
 

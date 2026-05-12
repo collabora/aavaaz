@@ -108,7 +108,7 @@ When enabled, completed segments include a `speaker` field:
 ### Authentication
 Protect both REST API and WebSocket connections with a shared API key:
 ```bash
-aavaaz serve --model large-v3 --api_key "my-secret-key"
+aavaaz serve --model large-v3 --api-key "my-secret-key"
 ```
 - **REST API**: Requires `Authorization: Bearer my-secret-key` header
 - **WebSocket**: Requires either `Authorization: Bearer my-secret-key` header or `?token=my-secret-key` query parameter
@@ -118,7 +118,7 @@ Unauthenticated connections receive HTTP 401 before any GPU resources are alloca
 ### Rate Limiting
 Limit REST API requests per client IP (sliding 60-second window):
 ```bash
-aavaaz serve --model large-v3 --rate_limit_rpm 60
+aavaaz serve --model large-v3 --rate-limit-rpm 60
 ```
 Clients exceeding the limit receive HTTP 429.
 
@@ -137,13 +137,13 @@ client = TranscriptionClient(
 ### Batch Inference
 Batch multiple client sessions into single GPU calls for higher throughput:
 ```bash
-aavaaz serve --model large-v3 --batch_inference --batch_max_size 8 --batch_window_ms 50
+aavaaz serve --model large-v3 --batch-inference --batch-max-size 8 --batch-window-ms 50
 ```
 
 ### Prometheus Metrics
 Monitor server health with a Prometheus `/metrics` endpoint:
 ```bash
-aavaaz serve --model large-v3 --metrics_port 9091
+aavaaz serve --model large-v3 --metrics-port 9091
 ```
 Tracks active connections, transcription latency, segment counts, and error rates.
 
@@ -172,7 +172,7 @@ Plugins receive each transcription segment and can modify, enrich, or filter it 
 
 ### Single GPU
 ```bash
-aavaaz serve --model large-v3 --batch_inference
+aavaaz serve --model large-v3 --batch-inference
 ```
 
 ### Multi-GPU (Docker Compose)

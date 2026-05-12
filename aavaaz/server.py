@@ -30,6 +30,12 @@ class AavaazServer:
         enable_rest_api: bool = True,
         rest_port: int = 8000,
         plugin_registry: Optional[PluginRegistry] = None,
+        api_key: Optional[str] = None,
+        rate_limit_rpm: int = 0,
+        metrics_port: int = 0,
+        batch_inference: bool = False,
+        batch_max_size: int = 8,
+        batch_window_ms: int = 50,
     ):
         self.host = host
         self.port = port
@@ -38,6 +44,12 @@ class AavaazServer:
         self.enable_rest_api = enable_rest_api
         self.rest_port = rest_port
         self.plugin_registry = plugin_registry or default_registry
+        self.api_key = api_key
+        self.rate_limit_rpm = rate_limit_rpm
+        self.metrics_port = metrics_port
+        self.batch_inference = batch_inference
+        self.batch_max_size = batch_max_size
+        self.batch_window_ms = batch_window_ms
 
     def run(self):
         """Start the Aavaaz server (WhisperLive + plugins + REST API)."""
@@ -62,4 +74,10 @@ class AavaazServer:
             enable_rest_api=self.enable_rest_api,
             rest_api_port=self.rest_port,
             segment_post_processor=post_processor,
+            batch_enabled=self.batch_inference,
+            batch_max_size=self.batch_max_size,
+            batch_window_ms=self.batch_window_ms,
+            api_key=self.api_key,
+            rate_limit_rpm=self.rate_limit_rpm,
+            metrics_port=self.metrics_port,
         )
