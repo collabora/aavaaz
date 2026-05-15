@@ -82,10 +82,23 @@ cd deploy/terraform-lambda
 
 This script:
 1. Runs `terraform apply` to create infrastructure (ECR, Lambda, S3, API Gateway, IAM roles)
-2. Builds the Docker container image with the `small.en` Whisper model
-3. Pushes the image to ECR
-4. Updates the Lambda function
-5. Prints the web demo URL and API endpoint
+2. Copies WhisperLive source from `~/src/WhisperLive/whisper_live/` into the build context
+3. Builds the Docker container image with the Whisper model baked in
+4. Pushes the image to ECR
+5. Updates the Lambda function
+6. Prints the web demo URL and API endpoint
+
+## Important: Cold Start
+
+The first request after the Lambda has been idle (~5-15 minutes) will **timeout** through API Gateway (hard 29-second limit). This is because loading the Whisper model on CPU takes ~20-40 seconds.
+
+**Workaround — warm up the Lambda before using:**
+```bash
+aws lambda invoke --function-name aavaaz-transcribe \
+  --payload '{}' --cli-binary-format raw-in-base64-out /tmp/warmup.json
+```
+
+After warming up, responses are fast (1-5 seconds). The Lambda stays warm for 5-15 minutes between requests.
 
 ## Usage
 
@@ -103,12 +116,12 @@ curl -X POST "$API_ENDPOINT" \
 | Resource | Free Tier Limit | Notes |
 |----------|----------------|-------|
 | Lambda requests | 1M/month | Each transcription = 1 request |
-| Lambda compute | 400,000 GB-sec/month | At 4GB RAM: ~100K seconds (~28 hrs) |
+| Lambda compute | 400,000 GB-sec/month | At 3GB RAM: ~133K seconds (~37 hrs) |
 | API Gateway | 1M calls/month | GET + POST combined |
 | S3 | 5GB storage | Audio + transcript storage |
 | ECR | 500MB storage | Container image |
 
-With `small.en` at 4GB RAM on CPU, transcription runs at roughly 1x realtime, so free tier gives you approximately **28 hours of audio transcription per month**.
+With `tiny.en` at 3GB RAM on CPU, transcription runs at roughly 6x realtime (10s audio ≈ 1.5s processing), so free tier gives you approximately **37 hours of Lambda compute per month**.
 
 ## Configuration
 
@@ -120,11 +133,42 @@ terraform apply -var="whisper_model=base.en" -var="lambda_memory_mb=2048"
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `whisper_model` | `small.en` | Whisper model (tiny, base, small, medium) |
-| `lambda_memory_mb` | 4096 | Lambda memory (more = more CPU) |
+| `whisper_model` | `small.en` | Whisper model (tiny.en, base.en, small.en) |
+| `lambda_memory_mb` | 3008 | Lambda memory (more = more CPU, max 3008 free tier) |
 | `lambda_timeout` | 300 | Max seconds per invocation |
 | `output_format` | json | Transcript format |
 | `enable_api_gateway` | true | Create HTTP API |
+
+**Note:** The deploy script uses `WHISPER_MODEL` env var to control the Docker build model. The Terraform variable controls the Lambda environment variable (they should match).
+
+## Architecture
+
+```
+Browser → API Gateway (HTTPS) → Lambda (container)
+                                    ├── WhisperLive transcriber (from ~/src/WhisperLive)
+                                    ├── faster-whisper + CTranslate2 (CPU, int8)
+                                    └── Aavaaz post-processing (formatting, PII redaction)
+```
+
+The Lambda container includes:
+- Aavaaz package (post-processing, formatters)
+- WhisperLive source (transcription engine) — copied during Docker build
+- Pre-downloaded Whisper model cached at `/opt/hf_cache/`
+- ffmpeg for audio format conversion
+
+## Troubleshooting
+
+### "Service Unavailable" on first request
+Cold start exceeded API Gateway's 29s timeout. Warm up the Lambda first (see above).
+
+### "Internal Server Error"
+Check CloudWatch logs:
+```bash
+aws logs tail /aws/lambda/aavaaz-transcribe --since 5m
+```
+
+### Function URL returns 403
+Some AWS accounts restrict public Lambda Function URLs. Use the API Gateway endpoint instead.
 
 ## Cleanup
 
