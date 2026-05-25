@@ -1,11 +1,10 @@
 """Integration tests for the auth module."""
 
-import time
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import MagicMock
 
 import pytest
 
-from aavaaz.api.auth import configure_auth, create_token, verify_token, require_auth
+from aavaaz.api.auth import configure_auth, create_token, require_auth, verify_token
 
 
 class TestJWT:

@@ -1,6 +1,6 @@
 """Integration tests for the diarization module (mocked embedding model)."""
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 
 import numpy as np
 

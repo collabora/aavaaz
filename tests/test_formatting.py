@@ -1,12 +1,12 @@
 """Integration tests for the formatting module."""
 
 from aavaaz.features.formatting import (
-    format_transcript,
-    smart_format,
-    _replace_spoken_numbers,
     _capitalize_sentences,
     _collapse_whitespace,
+    _replace_spoken_numbers,
     _words_to_number,
+    format_transcript,
+    smart_format,
 )
 
 

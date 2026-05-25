@@ -3,8 +3,8 @@
 import numpy as np
 
 from aavaaz.features.multichannel import (
-    split_channels,
     merge_channel_segments,
+    split_channels,
 )
 
 

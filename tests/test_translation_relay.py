@@ -1,7 +1,8 @@
 """Integration tests for the translation relay module."""
 
-from aavaaz.features.translation_relay import TranslationRelay, RelayChannel, Subscriber
 import pytest
+
+from aavaaz.features.translation_relay import RelayChannel, Subscriber, TranslationRelay
 
 
 class TestTranslationRelay:

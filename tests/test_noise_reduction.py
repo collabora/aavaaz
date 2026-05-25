@@ -1,6 +1,6 @@
 """Integration tests for the noise reduction module."""
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 import numpy as np
 import pytest
@@ -11,8 +11,6 @@ class TestNoiseReducer:
         """NoiseReducer raises ImportError if noisereduce not installed."""
         with patch.dict("sys.modules", {"noisereduce": None}):
             # Re-import to trigger the ImportError path
-            import importlib
-            import aavaaz.features.noise_reduction as nr_mod
             # Can't easily test this without reimporting; test the is_available check instead
             pass
 

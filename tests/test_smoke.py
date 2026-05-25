@@ -9,7 +9,6 @@ Mark it with 'smoke' so it can be run separately:
 Requires: faster-whisper (pip install faster-whisper)
 """
 
-import os
 import sys
 from pathlib import Path
 
@@ -32,7 +31,7 @@ AUDIO_FILE = FIXTURE_DIR / "smoke_test.wav"
 @pytest.mark.smoke
 def test_faster_whisper_transcribe():
     """Load tiny.en model and transcribe a short WAV file end-to-end."""
-    fw = pytest.importorskip("faster_whisper")
+    pytest.importorskip("faster_whisper")
     from faster_whisper import WhisperModel
 
     model = WhisperModel("tiny.en", device="cpu", compute_type="int8")
@@ -62,9 +61,8 @@ def test_aavaaz_server_init_and_format_pipeline():
     sys.modules.setdefault("whisper_live", MagicMock())
     sys.modules.setdefault("whisper_live.server", MagicMock())
 
-    from aavaaz.server import AavaazServer
     from aavaaz.features.formatting import format_transcript
-    from aavaaz.features.plugins import PluginRegistry
+    from aavaaz.server import AavaazServer
 
     # Server init should not crash
     server = AavaazServer(
@@ -85,8 +83,9 @@ def test_aavaaz_server_init_and_format_pipeline():
 @pytest.mark.smoke
 def test_full_pipeline_transcribe_and_format():
     """Transcribe audio then run through formatting pipeline."""
-    fw = pytest.importorskip("faster_whisper")
+    pytest.importorskip("faster_whisper")
     from faster_whisper import WhisperModel
+
     from aavaaz.features.formatting import format_transcript
 
     model = WhisperModel("tiny.en", device="cpu", compute_type="int8")

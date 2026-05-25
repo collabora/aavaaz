@@ -1,7 +1,8 @@
 """Integration tests for the ensemble transcription module."""
 
-from aavaaz.features.ensemble import EnsembleTranscriber, Segment, EnsembleResult
 import pytest
+
+from aavaaz.features.ensemble import EnsembleTranscriber, Segment
 
 
 class TestEnsembleTranscriber:

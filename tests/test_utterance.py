@@ -1,10 +1,10 @@
 """Integration tests for the utterance detection and paragraph segmentation module."""
 
 from aavaaz.features.utterance import (
-    Utterance,
     Paragraph,
-    UtteranceDetector,
     ParagraphSegmenter,
+    Utterance,
+    UtteranceDetector,
     detect_utterances_from_segments,
 )
 

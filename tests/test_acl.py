@@ -1,6 +1,5 @@
 """Integration tests for the ACL (user management) module."""
 
-import json
 import os
 import tempfile
 
@@ -9,7 +8,6 @@ from aavaaz.features.acl import (
     User,
     UserStore,
     generate_api_key,
-    _hash_key,
 )
 
 

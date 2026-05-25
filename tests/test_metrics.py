@@ -1,6 +1,6 @@
 """Integration tests for the metrics module."""
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 class TestMetrics:
@@ -20,10 +20,10 @@ class TestMetrics:
         if not is_available():
             return
         from aavaaz.features.metrics import (
-            CONNECTIONS_TOTAL,
             CONNECTIONS_ACTIVE,
-            TRANSCRIPTION_LATENCY,
+            CONNECTIONS_TOTAL,
             SEGMENTS_EMITTED,
+            TRANSCRIPTION_LATENCY,
         )
         # Verify they're proper prometheus objects
         assert hasattr(CONNECTIONS_TOTAL, "inc")

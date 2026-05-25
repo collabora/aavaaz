@@ -1,6 +1,6 @@
 """Integration tests for the model cache module."""
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 from aavaaz.features.model_cache import ModelCache
 

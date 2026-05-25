@@ -1,9 +1,7 @@
 """Integration tests for the batch inference module (mocked transcriber)."""
 
 import sys
-import threading
-import time
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
