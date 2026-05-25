@@ -95,11 +95,10 @@
             <option value="fr">French</option>
         </select>
 
-        <div id="dropZone" aria-label="Drop audio file here or click to select">
+        <div id="dropZone" aria-label="Drop audio file here or click to select" style="position: relative;">
             Drop audio file here or click to select
+            <input type="file" id="fileInput" accept="audio/*" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
         </div>
-        
-        <input type="file" id="fileInput" accept="audio/*" style="display: none;">
         
         <div id="progress"></div>
         <progress id="uploadProgress" value="0" max="100" style="width: 320px; display: none;"></progress>
@@ -162,8 +161,7 @@
             }
         }
 
-        // Handle click to select file (file input already has accept="audio/*")
-        dropZone.addEventListener('click', () => fileInput.click());
+        // Handle file selection (input overlays the drop zone for mobile compat)
         fileInput.addEventListener('change', () => {
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];

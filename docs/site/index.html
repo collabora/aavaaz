@@ -725,7 +725,14 @@
             color: var(--text-tertiary);
             text-align: right;
         }
-        .demo-file-input { display: none; }
+        .demo-file-input {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .demo-dropzone { position: relative; }
         .demo-spinner {
             display: inline-block;
             width: 14px; height: 14px;
@@ -1797,7 +1804,6 @@ curl http://localhost:<span class="num">8000</span>/health</pre>
             status.innerHTML = msg;
         }
 
-        dropzone.addEventListener('click', () => fileInput.click());
         dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
         dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
         dropzone.addEventListener('drop', (e) => {
