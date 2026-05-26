@@ -1559,8 +1559,9 @@
             </div>
             <div class="tab-body">
                 <div class="tab-panel active" id="tab-python">
-<pre><span class="cmt"># Install</span>
-pip install aavaaz
+<pre><span class="cmt"># Install (virtualenv recommended)</span>
+python -m venv .venv && source .venv/bin/activate
+pip install aavaaz whisper-live
 
 <span class="cmt"># Start server</span>
 aavaaz serve <span class="kw">--port</span> <span class="num">9090</span> <span class="kw">--backend</span> <span class="str">faster_whisper</span>

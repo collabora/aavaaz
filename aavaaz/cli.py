@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+import sys
 
 
 def main():
@@ -95,7 +96,21 @@ def main():
         print(f"aavaaz {__version__}")
 
     elif args.command == "serve":
-        from aavaaz.server import AavaazServer
+        try:
+            from aavaaz.server import AavaazServer
+        except ImportError as e:
+            if "whisper_live" in str(e):
+                print(
+                    "Error: whisper-live is required for 'aavaaz serve'.\n\n"
+                    "Install from PyPI (Python 3.12/3.13 recommended):\n"
+                    "  pip install whisper-live\n\n"
+                    "Or install from source (for development / Python 3.14+):\n"
+                    "  pip install --no-deps -e /path/to/WhisperLive\n"
+                    "  pip install faster-whisper websockets scipy",
+                    file=sys.stderr,
+                )
+                sys.exit(1)
+            raise
 
         server = AavaazServer(
             host=args.host,

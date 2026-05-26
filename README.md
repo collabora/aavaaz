@@ -18,7 +18,10 @@ with enterprise features that compete with Deepgram, ElevenLabs, and AssemblyAI.
 ## Quick Start
 
 ```bash
-pip install aavaaz
+# Create a virtualenv (recommended, Python 3.12 for full ML stack)
+python -m venv .venv && source .venv/bin/activate
+
+pip install aavaaz whisper-live
 
 # Start the server
 aavaaz serve --model large-v3
