@@ -32,7 +32,6 @@ import logging
 import os
 import tempfile
 import time
-import traceback
 import uuid
 from pathlib import Path
 from typing import Any

@@ -111,7 +111,6 @@ class Transcriber:
     def web(self):
         import os
 
-        import fastapi
         from fastapi.responses import HTMLResponse
         from fastapi.staticfiles import StaticFiles
 
@@ -144,7 +143,6 @@ class Transcriber:
         import uuid
         from pathlib import Path
 
-        import fastapi
 
         request_id = uuid.uuid4().hex[:12]
         logger.info("Request received: request_id=%s", request_id)
@@ -250,7 +248,6 @@ class Transcriber:
     def _transcribe(self, audio_path: str) -> dict:
         import os
 
-        import numpy as np
         from faster_whisper.audio import decode_audio
         from whisper_live.batch_inference import BatchRequest
 
