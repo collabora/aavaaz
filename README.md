@@ -2,9 +2,8 @@
 
 **Production-grade speech-to-text platform built on [WhisperLive](https://github.com/collabora/WhisperLive).**
 
-Aavaaz (आवाज़, "voice" in Hindi) extends WhisperLive with enterprise features
-that compete with Deepgram, ElevenLabs, and AssemblyAI — while keeping the
-core transcription engine open-source.
+Aavaaz (आवाज़, "voice" in Hindi) is an open source extension of WhisperLive
+with enterprise features that compete with Deepgram, ElevenLabs, and AssemblyAI.
 
 ## Features
 
