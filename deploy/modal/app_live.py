@@ -48,6 +48,7 @@ image = (
         "fastapi[standard]",
         "python-multipart",
         "tokenizers",
+        "torch",
         "tqdm",
         "websockets",
     )
