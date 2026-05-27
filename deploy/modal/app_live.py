@@ -20,14 +20,10 @@ Environment variables (set via Modal Secrets):
 """
 
 import asyncio
-import json
 import logging
-import threading
-from typing import Optional
 
 import fastapi
 import modal
-import numpy as np
 
 logger = logging.getLogger("aavaaz.modal.live")
 logger.setLevel(logging.INFO)
@@ -38,9 +34,7 @@ WEB_DIR = "/web"
 app = modal.App("aavaaz-live")
 
 image = (
-    modal.Image.from_registry(
-        "nvidia/cuda:12.4.1-runtime-ubuntu22.04", add_python="3.12"
-    )
+    modal.Image.from_registry("nvidia/cuda:12.4.1-runtime-ubuntu22.04", add_python="3.12")
     .apt_install("ffmpeg")
     .pip_install(
         "faster-whisper>=1.0",
@@ -52,7 +46,7 @@ image = (
         "websockets",
     )
     .run_commands(
-        f"python -c \"from faster_whisper import WhisperModel; "
+        f'python -c "from faster_whisper import WhisperModel; '
         f"WhisperModel('{WHISPER_MODEL}', device='cpu')\""
     )
     # Install local WhisperLive (with generator fix) BEFORE aavaaz so pip
@@ -88,16 +82,12 @@ class WebSocketAdapter:
         if self._closed:
             return
         logger.debug("Sending to client: %s", data[:200])
-        future = asyncio.run_coroutine_threadsafe(
-            self._ws.send_text(data), self._loop
-        )
+        future = asyncio.run_coroutine_threadsafe(self._ws.send_text(data), self._loop)
         future.result(timeout=10)
 
     def recv(self, timeout=None):
         """Receive data from the client (text or binary)."""
-        future = asyncio.run_coroutine_threadsafe(
-            self._recv_any(), self._loop
-        )
+        future = asyncio.run_coroutine_threadsafe(self._recv_any(), self._loop)
         return future.result(timeout=timeout or 300)
 
     async def _recv_any(self):
@@ -116,9 +106,7 @@ class WebSocketAdapter:
     def close(self):
         if not self._closed:
             self._closed = True
-            asyncio.run_coroutine_threadsafe(
-                self._ws.close(), self._loop
-            )
+            asyncio.run_coroutine_threadsafe(self._ws.close(), self._loop)
 
 
 @app.cls(
@@ -154,8 +142,8 @@ class LiveTranscriber:
         self.server.cache_path = "/tmp/whisper-cache"
 
         # Pre-load the model so first connection is fast
-        from whisper_live.backend.faster_whisper_backend import ServeClientFasterWhisper
         from faster_whisper import WhisperModel
+        from whisper_live.backend.faster_whisper_backend import ServeClientFasterWhisper
 
         ServeClientFasterWhisper.SINGLE_MODEL = WhisperModel(
             model_name, device="cuda", compute_type="float16"
@@ -164,6 +152,7 @@ class LiveTranscriber:
 
     def _make_client_manager(self, max_clients, max_time):
         from whisper_live.server import ClientManager
+
         return ClientManager(max_clients=max_clients, max_connection_time=max_time)
 
     def _build_post_processor(self):
@@ -172,9 +161,11 @@ class LiveTranscriber:
         fns = []
         if os.environ.get("AAVAAZ_ENABLE_FORMAT", "1") == "1":
             from aavaaz.features.formatting import smart_format
+
             fns.append(smart_format)
         if os.environ.get("AAVAAZ_ENABLE_PII", "0") == "1":
             from aavaaz.features.pii_redaction import redact_pii
+
             fns.append(redact_pii)
 
         if not fns:
@@ -235,9 +226,7 @@ class LiveTranscriber:
             # Run the WhisperLive recv_audio loop in a thread
             # (it's synchronous and blocking)
             try:
-                await asyncio.to_thread(
-                    self._handle_client, adapter
-                )
+                await asyncio.to_thread(self._handle_client, adapter)
             except Exception as e:
                 logger.error("WebSocket error: %s", e)
             finally:
@@ -247,8 +236,8 @@ class LiveTranscriber:
 
     def _handle_client(self, websocket: WebSocketAdapter):
         """Run WhisperLive's client handling in a sync context."""
-        from whisper_live.server import BackendType
         from websockets.exceptions import ConnectionClosed
+        from whisper_live.server import BackendType
 
         try:
             self.server.backend = BackendType.FASTER_WHISPER

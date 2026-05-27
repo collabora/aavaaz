@@ -39,9 +39,7 @@ WHISPERLIVE_DIR = "/opt/whisper_live"
 app = modal.App("aavaaz-transcribe")
 
 image = (
-    modal.Image.from_registry(
-        "nvidia/cuda:12.4.1-runtime-ubuntu22.04", add_python="3.12"
-    )
+    modal.Image.from_registry("nvidia/cuda:12.4.1-runtime-ubuntu22.04", add_python="3.12")
     .apt_install("ffmpeg")
     .pip_install(
         "faster-whisper>=1.0",
@@ -51,7 +49,7 @@ image = (
         "tqdm",
     )
     .run_commands(
-        f"python -c \"from faster_whisper import WhisperModel; "
+        f'python -c "from faster_whisper import WhisperModel; '
         f"WhisperModel('{WHISPER_MODEL}', device='cpu')\""
     )
     .add_local_dir("../../aavaaz", remote_path="/root/aavaaz_pkg/aavaaz", copy=True)
@@ -99,9 +97,7 @@ class Transcriber:
         model_name = os.environ.get("AAVAAZ_MODEL", WHISPER_MODEL)
         logger.info("Loading Whisper model: %s", model_name)
         self.model = WhisperModel(model_name, device="cuda", compute_type="float16")
-        self.batch_worker = BatchInferenceWorker(
-            self.model, max_batch_size=4, batch_window_ms=100
-        )
+        self.batch_worker = BatchInferenceWorker(self.model, max_batch_size=4, batch_window_ms=100)
         self.batch_worker.start()
         self.language = os.environ.get("AAVAAZ_LANGUAGE") or None
         self.api_key = os.environ.get("AAVAAZ_API_KEY")
@@ -144,7 +140,6 @@ class Transcriber:
         import uuid
         from pathlib import Path
 
-
         request_id = uuid.uuid4().hex[:12]
         logger.info("Request received: request_id=%s", request_id)
 
@@ -164,13 +159,9 @@ class Transcriber:
                     form = await request.form()
                     upload = form.get("file")
                     if upload is None:
-                        raise fastapi.HTTPException(
-                            status_code=400, detail="No 'file' field"
-                        )
+                        raise fastapi.HTTPException(status_code=400, detail="No 'file' field")
                     response_format = form.get("response_format")
-                    filename = (
-                        getattr(upload, "filename", None) or f"{uuid.uuid4().hex}.wav"
-                    )
+                    filename = getattr(upload, "filename", None) or f"{uuid.uuid4().hex}.wav"
                     local_path = os.path.join(tmpdir, Path(filename).name)
                     content = await upload.read()
                     Path(local_path).write_bytes(content)
@@ -223,9 +214,7 @@ class Transcriber:
                     store_name = f"{uuid.uuid4().hex}_{os.path.basename(local_path)}"
                     store_path = os.path.join(AUDIO_VOLUME_PATH, store_name)
                     shutil.copy2(local_path, store_path)
-                    logger.info(
-                        "Stored audio: request_id=%s path=%s", request_id, store_path
-                    )
+                    logger.info("Stored audio: request_id=%s path=%s", request_id, store_path)
 
                 t0 = time.time()
                 result = self._transcribe(local_path)

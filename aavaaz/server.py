@@ -74,9 +74,7 @@ class AavaazServer:
         logger.info("Loaded %d plugins: %s", len(plugins), [p["name"] for p in plugins])
 
         # Use the registry's apply() as the WhisperLive segment_post_processor
-        post_processor = (
-            self.plugin_registry.apply if len(self.plugin_registry) > 0 else None
-        )
+        post_processor = self.plugin_registry.apply if len(self.plugin_registry) > 0 else None
 
         server.run(
             host=self.host,
