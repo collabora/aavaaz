@@ -173,29 +173,47 @@ class LiveTranscriber:
             fmt = features.get("formatting", {})
             if fmt.get("enabled", False):
                 from aavaaz.features.formatting import format_transcript
+
                 capitalize = fmt.get("capitalize", True)
                 numbers = fmt.get("numbers", True)
                 smart = fmt.get("smart", False)
-                fns.append(lambda text: format_transcript(text, capitalize=capitalize, numbers=numbers, smart=smart))
+                fns.append(
+                    lambda text: format_transcript(
+                        text, capitalize=capitalize, numbers=numbers, smart=smart
+                    )
+                )
 
             pii = features.get("pii", {})
             if pii.get("enabled", False):
                 from aavaaz.features.pii_redaction import redact_pii
-                pii_types = set(pii.get("types", ["ssn", "credit_card", "phone", "email", "ip_address"]))
+
+                pii_types = set(
+                    pii.get(
+                        "types", ["ssn", "credit_card", "phone", "email", "ip_address"]
+                    )
+                )
                 fns.append(lambda text, _t=pii_types: redact_pii(text, pii_types=_t))
 
             profanity = features.get("profanity", {})
             if profanity.get("enabled", False):
                 from aavaaz.features.profanity_filter import filter_profanity
+
                 mode = profanity.get("mode", "partial")
                 extra = profanity.get("extraWords", [])
-                fns.append(lambda text, _m=mode, _e=extra: filter_profanity(text, mode=_m, extra_words=_e or None))
+                fns.append(
+                    lambda text, _m=mode, _e=extra: filter_profanity(
+                        text, mode=_m, extra_words=_e or None
+                    )
+                )
 
             intel = features.get("intelligence", {})
             if intel.get("fillerRemoval", False):
                 from aavaaz.features.audio_intelligence import remove_filler_words
+
                 aggressive = intel.get("fillerAggressive", False)
-                fns.append(lambda text, _a=aggressive: remove_filler_words(text, aggressive=_a))
+                fns.append(
+                    lambda text, _a=aggressive: remove_filler_words(text, aggressive=_a)
+                )
 
             nr = features.get("noiseReduction", {})
             if nr.get("enabled", False):
@@ -207,9 +225,11 @@ class LiveTranscriber:
             # Legacy env-var-based config
             if os.environ.get("AAVAAZ_ENABLE_FORMAT", "1") == "1":
                 from aavaaz.features.formatting import smart_format
+
                 fns.append(smart_format)
             if os.environ.get("AAVAAZ_ENABLE_PII", "0") == "1":
                 from aavaaz.features.pii_redaction import redact_pii
+
                 fns.append(redact_pii)
 
         if not fns:
@@ -301,7 +321,11 @@ class LiveTranscriber:
                 nonlocal captured_options
                 data = original_recv(timeout=timeout)
                 try:
-                    captured_options = json.loads(data) if isinstance(data, str) else json.loads(data.decode())
+                    captured_options = (
+                        json.loads(data)
+                        if isinstance(data, str)
+                        else json.loads(data.decode())
+                    )
                 except (json.JSONDecodeError, UnicodeDecodeError, AttributeError):
                     pass
                 # Restore original recv after first message
@@ -321,8 +345,14 @@ class LiveTranscriber:
                 processor = self._build_post_processor(features=features)
                 if processor:
                     self.server.segment_post_processor = processor
-                    logger.info("Applied per-client feature config: %s",
-                                [k for k, v in features.items() if isinstance(v, dict) and v.get("enabled")])
+                    logger.info(
+                        "Applied per-client feature config: %s",
+                        [
+                            k
+                            for k, v in features.items()
+                            if isinstance(v, dict) and v.get("enabled")
+                        ],
+                    )
 
             while not self.server.client_manager.is_client_timeout(websocket):
                 if not self.server.process_audio_frames(websocket):

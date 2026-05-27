@@ -71,9 +71,7 @@ def create_api_key(user_id: str, name: str) -> tuple[dict, str]:
 
 def list_api_keys(user_id: str) -> list[dict]:
     """List all API keys for a user."""
-    response = _table_api_keys.query(
-        KeyConditionExpression=Key("user_id").eq(user_id)
-    )
+    response = _table_api_keys.query(KeyConditionExpression=Key("user_id").eq(user_id))
     return [
         {
             "id": item["key_id"],
@@ -148,13 +146,12 @@ def get_usage(user_id: str, days: int = 30) -> list[dict]:
     """Get daily usage records for a user (last N days)."""
     from datetime import timedelta
 
-    start_date = (
-        datetime.now(timezone.utc) - timedelta(days=days)
-    ).strftime("%Y-%m-%d")
+    start_date = (datetime.now(timezone.utc) - timedelta(days=days)).strftime(
+        "%Y-%m-%d"
+    )
 
     response = _table_usage.query(
-        KeyConditionExpression=Key("user_id").eq(user_id)
-        & Key("date").gte(start_date),
+        KeyConditionExpression=Key("user_id").eq(user_id) & Key("date").gte(start_date),
         ScanIndexForward=True,
     )
 

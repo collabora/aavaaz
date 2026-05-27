@@ -131,9 +131,7 @@ async def list_api_keys(claims: dict = Depends(require_auth)):
 
 
 @router.post("/api-keys")
-async def create_api_key(
-    body: CreateKeyRequest, claims: dict = Depends(require_auth)
-):
+async def create_api_key(body: CreateKeyRequest, claims: dict = Depends(require_auth)):
     user_id = claims["sub"]
 
     # Generate a secure API key with identifiable prefix
@@ -232,9 +230,7 @@ async def get_subscription(claims: dict = Depends(require_auth)):
 
 
 @router.post("/checkout")
-async def create_checkout(
-    body: CheckoutRequest, claims: dict = Depends(require_auth)
-):
+async def create_checkout(body: CheckoutRequest, claims: dict = Depends(require_auth)):
     """Create a Stripe Checkout session for plan upgrade."""
     user_id = claims["sub"]
 
