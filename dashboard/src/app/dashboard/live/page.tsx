@@ -134,6 +134,12 @@ export default function LiveDemoPage() {
         </p>
       </div>
 
+      <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm text-amber-200">
+        <strong>Note:</strong> The transcription server uses serverless GPUs that scale to zero when idle.
+        The first connection may take <strong>30–60 seconds</strong> for a cold start while the model loads.
+        Subsequent connections will be instant.
+      </div>
+
       <div className="rounded-lg border bg-card p-8 text-center space-y-6">
         {/* Controls */}
         <div className="flex items-center justify-center gap-4 flex-wrap">
