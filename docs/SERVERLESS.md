@@ -4,6 +4,9 @@ Aavaaz supports serverless deployment on AWS Lambda for batch audio
 transcription.  This mode is ideal for file-based workloads where you don't
 need real-time streaming — upload an audio file and receive the transcript.
 
+Production note: in this project, Lambda is the batch transcription deployment.
+Live transcription is deployed separately on Modal via `deploy/modal/app_live.py`.
+
 ## Architecture
 
 ```
@@ -82,7 +85,7 @@ All configuration is via environment variables on the Lambda function:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `AAVAAZ_MODEL` | `small.en` | Whisper model (must match the model baked into the image) |
+| `AAVAAZ_MODEL` | `small` | Whisper model (must match the model baked into the image) |
 | `AAVAAZ_LANGUAGE` | *(auto)* | Language code (`en`, `fr`, etc.) or empty for auto-detect |
 | `AAVAAZ_OUTPUT_FORMAT` | `json` | Output format: `json`, `text`, `srt`, `vtt` |
 | `AAVAAZ_OUTPUT_BUCKET` | *(from Terraform)* | S3 bucket for transcript output |
@@ -95,7 +98,7 @@ All configuration is via environment variables on the Lambda function:
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `aws_region` | `us-east-1` | AWS region |
-| `whisper_model` | `small.en` | Model name (used in env vars) |
+| `whisper_model` | `small` | Model name (used in env vars) |
 | `lambda_memory_mb` | `4096` | Lambda memory — more memory = more CPU |
 | `lambda_timeout` | `300` | Timeout in seconds (max 900) |
 | `output_format` | `json` | Transcript format |
@@ -110,7 +113,7 @@ Lambda is CPU-only with a 10 GB memory limit.  Recommended models:
 |-------|--------|---------------------|---------|
 | `tiny.en` | 1 GB | ~3 sec | Basic |
 | `base.en` | 1.5 GB | ~5 sec | Good |
-| `small.en` | 2.5 GB | ~10 sec | **Recommended** |
+| `small` | 2.5 GB | ~10 sec | **Recommended (multilingual)** |
 | `medium.en` | 5 GB | ~25 sec | High |
 
 Use `int8` compute type (default in the Lambda image) to halve memory usage.

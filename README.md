@@ -280,6 +280,8 @@ See [deploy/terraform/README.md](deploy/terraform/README.md) for full options.
 
 For batch file transcription without managing servers:
 
+Production role: Lambda is the batch transcription path.
+
 ```bash
 # Build and push the Lambda container image
 docker build -f Dockerfile.lambda --build-arg WHISPER_MODEL=small.en -t aavaaz-lambda .
@@ -305,15 +307,20 @@ selection, cost estimates, and limitations.
 
 Deploy on Modal for on-demand GPU transcription with zero infrastructure:
 
+Production role: Modal is used for live WebSocket transcription (`deploy/modal/app_live.py`).
+The `deploy/modal/app.py` endpoint is an optional GPU batch API.
+
 ```bash
 cd deploy/modal
 pip install modal
 modal setup
-modal deploy app.py
+modal deploy app_live.py
+
+# Optional: deploy the GPU batch API endpoint
+# modal deploy app.py
 
 # Transcribe
-curl -X POST https://your-workspace--aavaaz-transcribe.modal.run/v1/audio/transcriptions \
-  -F file=@recording.wav -F model=large-v3
+# Live websocket URL is exposed by app_live.py deployment output.
 ```
 
 Auto-scales to zero when idle, GPU containers spin up in seconds.

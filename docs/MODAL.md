@@ -4,6 +4,17 @@ Aavaaz supports serverless GPU transcription on [Modal](https://modal.com).
 Containers auto-scale to zero when idle and spin up in seconds with GPU
 attached — no infrastructure to manage.
 
+Production note: in this project, Modal is primarily used for live WebSocket
+transcription via `deploy/modal/app_live.py`. This page documents the optional
+GPU batch HTTP endpoint in `deploy/modal/app.py`.
+
+For live deployment:
+
+```bash
+cd deploy/modal
+modal deploy app_live.py
+```
+
 ## Architecture
 
 ```
