@@ -235,12 +235,11 @@ The following features have been implemented across our feature branches:
 - **Dedicated tenancy**: EC2 dedicated instances if required.
 
 ### Licensing
-- **Aavaaz**: MIT License ✅ — fully permissive for commercial use.
+- **Aavaaz**: MPL 2.0 License ✅ — compatible with commercial use.
 - **faster-whisper**: MIT License ✅
 - **openai-whisper**: MIT License ✅
 - **PyTorch**: BSD License ✅
 - **ONNX Runtime**: MIT License ✅
-- No copyleft (GPL) dependencies in the critical path. All clear for commercial deployment.
 
 ---
 
